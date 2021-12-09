@@ -96,45 +96,19 @@ digraph "Diagram" {
         width = 1.2,
         height = 1.466,
       ];
-      subgraph "cluster-SubGraph.DeployWebsite" {
-        graph [
-          label = "DeployWebsite",
-          labelloc = "b",
-          labeljust = "l",
-          margin = "10",
-          fontsize = "16",
-          penwidth = "2",
-          pencolor = "#888888",
-          style = "filled,rounded",
-          fillcolor = "#d6d6d6",
-        ];
-        "CanaryStack/DeployWebsite/AwsCliLayer" [
-          label = " AwsCliLayer",
-          fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
-          imagescale = "true",
-          imagepos = "tc",
-          penwidth = "0",
-          shape = "node",
-          fixedsize = "true",
-          labelloc = "b",
-          width = 2,
-          height = 2.266,
-        ];
-        "CanaryStack/DeployWebsite/CustomResource" [
-          label = " CloudFormation\nCustomResource\nCustomResource",
-          fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
-          imagescale = "true",
-          imagepos = "tc",
-          penwidth = "0",
-          shape = "node",
-          fixedsize = "true",
-          labelloc = "b",
-          width = 1.2,
-          height = 1.898,
-        ];
-      }
+      "CanaryStack/DeployWebsite/AwsCliLayer" [
+        label = " AwsCliLayer",
+        fontsize = 12,
+        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+        imagescale = "true",
+        imagepos = "tc",
+        penwidth = "0",
+        shape = "node",
+        fixedsize = "true",
+        labelloc = "b",
+        width = 2,
+        height = 2.266,
+      ];
     }
   }
   "CanaryStack/Custom__CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C" -> "CanaryStack/WebsiteBucket" [

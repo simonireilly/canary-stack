@@ -1,19 +1,26 @@
-import * as cdk from '@aws-cdk/core';
-import { Canary, Code, Runtime, Schedule, Test } from '@aws-cdk/aws-synthetics';
-import { CfnOutput, Duration } from '@aws-cdk/core';
-import * as path from 'path';
+import {
+  Canary,
+  Code,
+  Runtime,
+  Schedule,
+  Test,
+} from '@aws-cdk/aws-synthetics-alpha';
+import { Stack, StackProps, CfnOutput, Duration } from 'aws-cdk-lib';
+
 import {
   Alarm,
   AlarmWidget,
   ComparisonOperator,
   Dashboard,
   PeriodOverride,
-} from '@aws-cdk/aws-cloudwatch';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
+} from 'aws-cdk-lib/aws-cloudwatch';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
+import { Construct } from 'constructs';
+import * as path from 'path';
 
-export class CanaryStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class CanaryStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const websiteBucket = new Bucket(this, 'WebsiteBucket', {
