@@ -96,19 +96,101 @@ digraph "Diagram" {
         width = 1.2,
         height = 1.466,
       ];
-      "CanaryStack/DeployWebsite/AwsCliLayer" [
-        label = " AwsCliLayer",
-        fontsize = 12,
-        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
-        imagescale = "true",
-        imagepos = "tc",
-        penwidth = "0",
-        shape = "node",
-        fixedsize = "true",
-        labelloc = "b",
-        width = 2,
-        height = 2.266,
-      ];
+      subgraph "cluster-SubGraph.DeployWebsite" {
+        graph [
+          label = "DeployWebsite",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        "CanaryStack/DeployWebsite/AwsCliLayer" [
+          label = " AwsCliLayer",
+          fontsize = 12,
+          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+        "CanaryStack/DeployWebsite/CustomResource" [
+          label = " CloudFormation\nCustomResource\nCustomResource",
+          fontsize = 12,
+          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.898,
+        ];
+      }
+      subgraph "cluster-SubGraph.SiteRum" {
+        graph [
+          label = "SiteRum",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        "CanaryStack/SiteRum/RumAppIdentityPool" [
+          label = " Cognito IdentityPool\nRumAppIdentityPool",
+          fontsize = 12,
+          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.682,
+        ];
+        "CanaryStack/SiteRum/UnauthenticatedRumRole" [
+          label = "\nUnauthenticatedRumRol",
+          fontsize = 12,
+          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.682,
+        ];
+        "CanaryStack/SiteRum/RumAppRoleAttachment" [
+          label = " Cognito\nRumAppRoleAttachment",
+          fontsize = 12,
+          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.682,
+        ];
+        "CanaryStack/SiteRum/RumAppMonitor" [
+          label = " RUM APPMONITOR\nRumAppMonitor",
+          fontsize = 12,
+        ];
+      }
     }
   }
   "CanaryStack/Custom__CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C" -> "CanaryStack/WebsiteBucket" [
@@ -118,6 +200,21 @@ digraph "Diagram" {
     dir = "both",
   ];
   "CanaryStack/MyCanary" -> "CanaryStack/WebsiteBucket" [
+    dir = "both",
+  ];
+  "CanaryStack/SiteRum/UnauthenticatedRumRole" -> "CanaryStack/SiteRum/RumAppIdentityPool" [
+    dir = "both",
+  ];
+  "CanaryStack/SiteRum/RumAppRoleAttachment" -> "CanaryStack/SiteRum/RumAppIdentityPool" [
+    dir = "both",
+  ];
+  "CanaryStack/SiteRum/RumAppRoleAttachment" -> "CanaryStack/SiteRum/UnauthenticatedRumRole" [
+    dir = "both",
+  ];
+  "CanaryStack/SiteRum/RumAppMonitor" -> "CanaryStack/SiteRum/RumAppIdentityPool" [
+    dir = "both",
+  ];
+  "CanaryStack/SiteRum/RumAppMonitor" -> "CanaryStack/SiteRum/UnauthenticatedRumRole" [
     dir = "both",
   ];
   "CanaryStack/CanaryAlarm" -> "CanaryStack/MyCanary" [

@@ -5,8 +5,7 @@ import {
   Schedule,
   Test,
 } from '@aws-cdk/aws-synthetics-alpha';
-import { Stack, StackProps, CfnOutput, Duration } from 'aws-cdk-lib';
-
+import { CfnOutput, Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
 import {
   Alarm,
   AlarmWidget,
@@ -18,6 +17,7 @@ import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 import * as path from 'path';
+import { Rum } from './rum/rum-constrcut';
 
 export class CanaryStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -34,7 +34,7 @@ export class CanaryStack extends Stack {
     });
 
     const canary = new Canary(this, 'MyCanary', {
-      schedule: Schedule.rate(Duration.minutes(5)),
+      schedule: Schedule.rate(Duration.minutes(30)),
       test: Test.custom({
         code: Code.fromAsset(path.join(__dirname, 'canary')),
         handler: 'index.handler',
@@ -44,6 +44,14 @@ export class CanaryStack extends Stack {
         SITE_URL: websiteBucket.bucketWebsiteUrl,
       },
     });
+
+    const rum = new Rum(this, 'SiteRum', {
+      topLevelDomain: 's3-website-eu-west-1.amazonaws.com',
+      appMonitorName: 'canary-stack-monitor',
+      stack: this,
+    });
+
+    Tags.of(canary).add(rum.appMonitor.name, 'associated-rum');
 
     const alarm = new Alarm(this, 'CanaryAlarm', {
       metric: canary.metricSuccessPercent(),
