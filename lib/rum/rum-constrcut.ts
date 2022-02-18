@@ -15,9 +15,35 @@ import { Construct } from 'constructs';
 export interface RumProps {
   topLevelDomain: string;
   appMonitorName: string;
+  scriptConfig?: {
+    s3Config: {
+      /**
+       * The origin server bucket name that the file should be uploaded to.
+       * */
+      bucketName: string;
+      /**
+       * The file path to upload the file to which is relative to the root page
+       * of your website in s3 Origin.
+       *
+       *
+       * @example <script src="./rum.js"></script>
+       *
+       * // Set this to
+       *
+       * rum.js
+       *
+       */
+      filePath: string;
+    };
+  };
   stack: Stack;
 }
 
+/**
+ * The RUM custom resource can be used to setup Real User Monitoring using AWS
+ *
+ * The resource itself creates all the required
+ */
 export class Rum extends Construct {
   private stack: Stack;
   protected identityPool: CfnIdentityPool;

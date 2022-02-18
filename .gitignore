@@ -8,3 +8,5 @@ node_modules
 .cdk.staging
 cdk.out
 !rum.js
+
+coverage
