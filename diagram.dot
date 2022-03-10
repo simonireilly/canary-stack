@@ -43,7 +43,7 @@ digraph "Diagram" {
       "CanaryStack/WebsiteBucket" [
         label = " WebsiteBucket",
         fontsize = 12,
-        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Storage/64/Arch_Amazon-S3-Standard_64@5x.png",
+        image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Storage/64/Arch_Amazon-S3-Standard_64@5x.png",
         imagescale = "true",
         imagepos = "tc",
         penwidth = "0",
@@ -56,7 +56,7 @@ digraph "Diagram" {
       "CanaryStack/Custom__CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C" [
         label = " Custom \nCDKBucketDeployment86",
         fontsize = 12,
-        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+        image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
         imagescale = "true",
         imagepos = "tc",
         penwidth = "0",
@@ -73,7 +73,7 @@ digraph "Diagram" {
       "CanaryStack/CanaryAlarm" [
         label = " CanaryAlarm",
         fontsize = 12,
-        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
+        image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
         imagescale = "true",
         imagepos = "tc",
         penwidth = "0",
@@ -86,7 +86,7 @@ digraph "Diagram" {
       "CanaryStack/MainDashbaord" [
         label = " MainDashbaord",
         fontsize = 12,
-        image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
+        image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
         imagescale = "true",
         imagepos = "tc",
         penwidth = "0",
@@ -111,7 +111,7 @@ digraph "Diagram" {
         "CanaryStack/DeployWebsite/AwsCliLayer" [
           label = " AwsCliLayer",
           fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
+          image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
           imagescale = "true",
           imagepos = "tc",
           penwidth = "0",
@@ -124,7 +124,7 @@ digraph "Diagram" {
         "CanaryStack/DeployWebsite/CustomResource" [
           label = " CloudFormation\nCustomResource\nCustomResource",
           fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
+          image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_AWS-CloudFormation_64@5x.png",
           imagescale = "true",
           imagepos = "tc",
           penwidth = "0",
@@ -150,7 +150,7 @@ digraph "Diagram" {
         "CanaryStack/SiteRum/RumAppIdentityPool" [
           label = " Cognito IdentityPool\nRumAppIdentityPool",
           fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
+          image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
           imagescale = "true",
           imagepos = "tc",
           penwidth = "0",
@@ -163,7 +163,7 @@ digraph "Diagram" {
         "CanaryStack/SiteRum/UnauthenticatedRumRole" [
           label = "\nUnauthenticatedRumRol",
           fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+          image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
           imagescale = "true",
           imagepos = "tc",
           penwidth = "0",
@@ -176,7 +176,7 @@ digraph "Diagram" {
         "CanaryStack/SiteRum/RumAppRoleAttachment" [
           label = " Cognito\nRumAppRoleAttachment",
           fontsize = 12,
-          image = "/home/simon/code/stacks/canary/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
+          image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_Amazon-Cognito_64.png",
           imagescale = "true",
           imagepos = "tc",
           penwidth = "0",

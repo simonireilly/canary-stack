@@ -1,11 +1,43 @@
-import { RUM } from 'aws-sdk';
+import { RUM } from "aws-sdk";
+
+export interface CustomProperties {
+  appMonitorName: string;
+  s3BucketName: string;
+  ServiceToken: string;
+}
 
 const rum = new RUM({});
 
-const rumFileService = async (name: string): Promise<string> => {
+export const customPropertiesTypeGuard = (
+  props: unknown
+): props is CustomProperties => {
+  if (Array.isArray(props)) {
+    return false;
+  }
+
+  if (typeof props !== "object") {
+    return false;
+  }
+
+  const typeCastProps = props as CustomProperties;
+
+  if (typeof typeCastProps.appMonitorName !== "string") {
+    return false;
+  }
+
+  if (typeof typeCastProps.s3BucketName !== "string") {
+    return false;
+  }
+
+  return true;
+};
+
+export const rumFileService = async (
+  appMonitorName: string
+): Promise<string> => {
   const appMonitor = await rum
     .getAppMonitor({
-      Name: name,
+      Name: appMonitorName,
     })
     .promise();
 
@@ -15,14 +47,10 @@ const rumFileService = async (name: string): Promise<string> => {
     return fileString;
   }
 
-  return '';
+  return "";
 };
 
-/**
- * TODO: Improve the template to perform camel casing of
- * RUM.AppMonitor.AppMonitorConfiguration so that all configuration is supported
- */
-const RUM_TEMPLATE = (rum: RUM.AppMonitor) => `
+const RUM_TEMPLATE = (rum: RUM.AppMonitor): string => `
 (function (n, i, v, r, s, c, x, z) {
   x = window.AwsRumClient = { q: [], n: n, i: i, v: v, r: r, c: c };
   window[n] = function (c, p) {
@@ -56,5 +84,3 @@ const RUM_TEMPLATE = (rum: RUM.AppMonitor) => `
 );
 
 `;
-
-rumFileService('canary-stack-monitor');

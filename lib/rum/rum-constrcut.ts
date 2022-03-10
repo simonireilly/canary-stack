@@ -1,42 +1,25 @@
-import { Stack } from 'aws-cdk-lib';
+import { CustomResource, Stack } from "aws-cdk-lib";
 import {
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
-} from 'aws-cdk-lib/aws-cognito';
+} from "aws-cdk-lib/aws-cognito";
 import {
   FederatedPrincipal,
   PolicyDocument,
   PolicyStatement,
   Role,
-} from 'aws-cdk-lib/aws-iam';
-import { CfnAppMonitor } from 'aws-cdk-lib/aws-rum';
-import { Construct } from 'constructs';
+} from "aws-cdk-lib/aws-iam";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { CfnAppMonitor } from "aws-cdk-lib/aws-rum";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { AwsCustomResource } from "aws-cdk-lib/custom-resources";
+import { Construct } from "constructs";
+import path = require("path");
 
 export interface RumProps {
   topLevelDomain: string;
   appMonitorName: string;
-  scriptConfig?: {
-    s3Config: {
-      /**
-       * The origin server bucket name that the file should be uploaded to.
-       * */
-      bucketName: string;
-      /**
-       * The file path to upload the file to which is relative to the root page
-       * of your website in s3 Origin.
-       *
-       *
-       * @example <script src="./rum.js"></script>
-       *
-       * // Set this to
-       *
-       * rum.js
-       *
-       */
-      filePath: string;
-    };
-  };
-  stack: Stack;
+  s3Bucket: Bucket;
 }
 
 /**
@@ -45,18 +28,18 @@ export interface RumProps {
  * The resource itself creates all the required
  */
 export class Rum extends Construct {
-  private stack: Stack;
   protected identityPool: CfnIdentityPool;
   protected unauthenticatedRumRole: Role;
   readonly appMonitor: CfnAppMonitor;
   readonly topLevelDomain: string;
   readonly appMonitorName: string;
+  readonly s3Bucket: Bucket;
 
   constructor(scope: Construct, id: string, props: RumProps) {
     super(scope, id);
     this.topLevelDomain = props.topLevelDomain;
     this.appMonitorName = props.appMonitorName;
-    this.stack = props.stack;
+    this.s3Bucket = props.s3Bucket;
 
     this.appMonitor = this.initializeRum();
   }
@@ -65,38 +48,39 @@ export class Rum extends Construct {
     this.createIdentityPool();
     this.createRumRole();
     this.createRoleAttachment();
+    this.uploadRumFile();
     return this.createApplicationMonitor();
   }
 
   private createIdentityPool() {
-    this.identityPool = new CfnIdentityPool(this, 'RumAppIdentityPool', {
+    this.identityPool = new CfnIdentityPool(this, "RumAppIdentityPool", {
       allowUnauthenticatedIdentities: true,
     });
   }
 
   private createRumRole() {
-    this.unauthenticatedRumRole = new Role(this, 'UnauthenticatedRumRole', {
+    this.unauthenticatedRumRole = new Role(this, "UnauthenticatedRumRole", {
       assumedBy: new FederatedPrincipal(
-        'cognito-identity.amazonaws.com',
+        "cognito-identity.amazonaws.com",
         {
           StringEquals: {
-            'cognito-identity.amazonaws.com:aud': this.identityPool.ref,
+            "cognito-identity.amazonaws.com:aud": this.identityPool.ref,
           },
-          'ForAnyValue:StringLike': {
-            'cognito-identity.amazonaws.com:amr': 'unauthenticated',
+          "ForAnyValue:StringLike": {
+            "cognito-identity.amazonaws.com:amr": "unauthenticated",
           },
         },
-        'sts:AssumeRoleWithWebIdentity'
+        "sts:AssumeRoleWithWebIdentity"
       ),
       inlinePolicies: {
         RUMPutBatchMetrics: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              actions: ['rum:PutRumEvents'],
+              actions: ["rum:PutRumEvents"],
               resources: [
-                this.stack.formatArn({
-                  service: 'rum',
-                  resource: 'appmonitor',
+                Stack.of(this).formatArn({
+                  service: "rum",
+                  resource: "appmonitor",
                   resourceName: this.appMonitorName,
                 }),
               ],
@@ -108,7 +92,7 @@ export class Rum extends Construct {
   }
 
   private createRoleAttachment() {
-    new CfnIdentityPoolRoleAttachment(this, 'RumAppRoleAttachment', {
+    new CfnIdentityPoolRoleAttachment(this, "RumAppRoleAttachment", {
       identityPoolId: this.identityPool.ref,
       roles: {
         unauthenticated: this.unauthenticatedRumRole.roleArn,
@@ -117,7 +101,7 @@ export class Rum extends Construct {
   }
 
   private createApplicationMonitor() {
-    return new CfnAppMonitor(this, 'RumAppMonitor', {
+    return new CfnAppMonitor(this, "RumAppMonitor", {
       name: this.appMonitorName,
       cwLogEnabled: false,
       domain: this.topLevelDomain,
@@ -125,9 +109,32 @@ export class Rum extends Construct {
         allowCookies: true,
         enableXRay: true,
         sessionSampleRate: 1,
-        telemetries: ['errors', 'performance', 'http'],
+        telemetries: ["errors", "performance", "http"],
         identityPoolId: this.identityPool.ref,
         guestRoleArn: this.unauthenticatedRumRole.roleArn,
+      },
+    });
+  }
+
+  private uploadRumFile() {
+    const fn = new NodejsFunction(this, "OnEventHandler", {
+      handler: "handler",
+      entry: path.join(__dirname, "custom", "handler", "index.ts"),
+    });
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["s3:PutObject"],
+        resources: [this.s3Bucket.bucketArn],
+      })
+    );
+
+    new CustomResource(this, "UploadRumScriptToWebsiteBucket", {
+      serviceToken: fn.functionArn,
+      properties: {
+        s3BucketName: this.s3Bucket.bucketName,
+        appMonitorName: this.appMonitorName,
+        appMonitorConfiguration: this.appMonitor,
       },
     });
   }
