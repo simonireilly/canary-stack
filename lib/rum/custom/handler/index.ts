@@ -26,12 +26,12 @@ export const handler: CloudFormationCustomResourceHandler = async (
   try {
     switch (event.RequestType) {
       case "Create":
-        upsert(event.ResourceProperties);
+        await upsert(event.ResourceProperties);
       case "Update":
-        upsert(event.ResourceProperties);
+        await upsert(event.ResourceProperties);
         break;
       case "Delete":
-        destroy(event.ResourceProperties);
+        await destroy(event.ResourceProperties);
         break;
     }
     console.info("Processed request to update the RUM tempalt", {
@@ -41,7 +41,8 @@ export const handler: CloudFormationCustomResourceHandler = async (
 
     await sendSuccessMessage(event);
     return;
-  } catch {
+  } catch (e) {
+    console.error(e);
     await sendFailureMessage(event);
   }
 };

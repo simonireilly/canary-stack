@@ -17,7 +17,7 @@ export const sendFailureMessage = async (
     StackId: event.StackId,
   };
 
-  console.info("Sending success response", errorResponse);
+  console.info("Sending failed response", errorResponse);
 
   const data = JSON.stringify(errorResponse);
   return axios.put(event.ResponseURL, data, {
@@ -33,7 +33,7 @@ export const sendSuccessMessage = async (
 ) => {
   const successResponse: CloudFormationCustomResourceSuccessResponse = {
     Status: "SUCCESS",
-    Reason: "Sent all required env vars to vercel",
+    Reason: "Uploaded RUM script",
     PhysicalResourceId: `RumScriptUploader-${event.StackId}`,
     LogicalResourceId: event.LogicalResourceId,
     RequestId: event.RequestId,

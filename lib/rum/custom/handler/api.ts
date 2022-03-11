@@ -68,7 +68,7 @@ const RUM_TEMPLATE = (rum: RUM.AppMonitor): string => `
   '${rum.Id}',
   '1.0.0',
   'eu-west-1',
-  'https://client.rum.us-east-1.amazonaws.com/1.0.5/cwr.js',
+  'https://client.rum.us-east-1.amazonaws.com/1.2.1/cwr.js',
   {
     sessionSampleRate: ${rum.AppMonitorConfiguration?.SessionSampleRate},
     guestRoleArn:

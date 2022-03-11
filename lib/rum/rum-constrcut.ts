@@ -76,7 +76,7 @@ export class Rum extends Construct {
         RUMPutBatchMetrics: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              actions: ["rum:PutRumEvents"],
+              actions: ["rum:PutRumEvents", "xray:PutTraceSegments"],
               resources: [
                 Stack.of(this).formatArn({
                   service: "rum",
@@ -84,6 +84,10 @@ export class Rum extends Construct {
                   resourceName: this.appMonitorName,
                 }),
               ],
+            }),
+            new PolicyStatement({
+              actions: ["xray:PutTraceSegments"],
+              resources: ["*"],
             }),
           ],
         }),
@@ -117,15 +121,28 @@ export class Rum extends Construct {
   }
 
   private uploadRumFile() {
-    const fn = new NodejsFunction(this, "OnEventHandler", {
+    const fn = new NodejsFunction(this, "UploadRumScriptHandler", {
       handler: "handler",
       entry: path.join(__dirname, "custom", "handler", "index.ts"),
     });
 
     fn.addToRolePolicy(
       new PolicyStatement({
-        actions: ["s3:PutObject"],
-        resources: [this.s3Bucket.bucketArn],
+        actions: ["s3:PutObject*", "s3:DeleteObject*"],
+        resources: [`${this.s3Bucket.bucketArn}/rum.js`],
+      })
+    );
+
+    fn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["rum:GetAppMonitor"],
+        resources: [
+          Stack.of(this).formatArn({
+            service: "rum",
+            resource: "appmonitor",
+            resourceName: this.appMonitorName,
+          }),
+        ],
       })
     );
 

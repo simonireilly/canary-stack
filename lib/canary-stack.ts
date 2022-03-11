@@ -13,6 +13,12 @@ import {
   Dashboard,
   PeriodOverride,
 } from "aws-cdk-lib/aws-cloudwatch";
+import {
+  Effect,
+  Policy,
+  PolicyDocument,
+  PolicyStatement,
+} from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
@@ -34,7 +40,7 @@ export class CanaryStack extends Stack {
     });
 
     const canary = new Canary(this, "MyCanary", {
-      schedule: Schedule.rate(Duration.minutes(30)),
+      schedule: Schedule.rate(Duration.minutes(5)),
       test: Test.custom({
         code: Code.fromAsset(path.join(__dirname, "canary")),
         handler: "index.handler",
@@ -45,8 +51,22 @@ export class CanaryStack extends Stack {
       },
     });
 
+    canary.role.attachInlinePolicy(
+      new Policy(this, "CanaryAllowXrayPutTrace", {
+        document: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["xray:PutTraceSegments"],
+              resources: ["*"],
+            }),
+          ],
+        }),
+      })
+    );
+
     const rum = new Rum(this, "SiteRum", {
-      topLevelDomain: "s3-website-eu-west-1.amazonaws.com",
+      topLevelDomain: "*.s3-website-eu-west-1.amazonaws.com",
       appMonitorName: "canary-stack-rum",
       s3Bucket: websiteBucket,
     });
