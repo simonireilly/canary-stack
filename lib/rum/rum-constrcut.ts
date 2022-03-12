@@ -16,19 +16,29 @@ import { Construct } from "constructs";
 import path = require("path");
 
 export interface RumProps {
-  topLevelDomain: string;
-  appMonitorName: string;
-  s3Bucket: Bucket;
+  readonly topLevelDomain: string;
+  readonly appMonitorName: string;
+  readonly s3Bucket: Bucket;
+  // Injectable identity pool for
+  readonly identityPool?: CfnIdentityPool;
 }
 
 /**
  * The RUM custom resource can be used to setup Real User Monitoring using AWS
  *
  * The resource itself creates all the required
+ *
+ * @example
+ * const rum = new Rum(this, "SiteRum", {
+ *   topLevelDomain: "*.s3-website-eu-west-1.amazonaws.com",
+ *   appMonitorName: "canary-stack-rum",
+ *   s3Bucket: websiteBucket,
+ * });
+ *
  */
-export class Rum extends Construct {
-  protected identityPool: CfnIdentityPool;
+export class Rum extends Construct implements RumProps {
   protected unauthenticatedRumRole: Role;
+  readonly identityPool: CfnIdentityPool;
   readonly appMonitor: CfnAppMonitor;
   readonly topLevelDomain: string;
   readonly appMonitorName: string;
@@ -40,11 +50,12 @@ export class Rum extends Construct {
     this.appMonitorName = props.appMonitorName;
     this.s3Bucket = props.s3Bucket;
 
+    this.identityPool = props.identityPool ?? this.createIdentityPool();
+
     this.appMonitor = this.initializeRum();
   }
 
   private initializeRum() {
-    this.createIdentityPool();
     this.createRumRole();
     this.createRoleAttachment();
     this.uploadRumFile();
@@ -52,7 +63,7 @@ export class Rum extends Construct {
   }
 
   private createIdentityPool() {
-    this.identityPool = new CfnIdentityPool(this, "RumAppIdentityPool", {
+    return new CfnIdentityPool(this, "RumAppIdentityPool", {
       allowUnauthenticatedIdentities: true,
     });
   }
@@ -83,10 +94,6 @@ export class Rum extends Construct {
                   resourceName: this.appMonitorName,
                 }),
               ],
-            }),
-            new PolicyStatement({
-              actions: ["xray:PutTraceSegments"],
-              resources: ["*"],
             }),
           ],
         }),
@@ -119,6 +126,10 @@ export class Rum extends Construct {
     });
   }
 
+  /**
+   * Places a script inside the aws s3 bucket that serves the website
+   * using a custom resource
+   */
   private uploadRumFile() {
     const fn = new NodejsFunction(this, "UploadRumScriptHandler", {
       handler: "handler",
