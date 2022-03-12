@@ -1,22 +1,42 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Simon's Test Page</title>
     <script src="./rum.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html,
+      body {
+        font-family: "Gill Sans", sans-serif;
+      }
+      img {
+        max-height: 70vh;
+        max-width: 100%;
+        object-fit: contain;
+      }
+      nav > ul > li > a {
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
-    <main style="display: flex; flex-direction: column; align-items: center;">
-      <h1>
-        Welcome to the canary stack
-      </h1>
+    <main style="display: flex; flex-direction: column; align-items: center">
+      <h1>Welcome to the canary stack</h1>
 
       <p>
-        This is a simple single page website that show cases the aws-cdk.
-        The architecture below is created automatically by cdk-dia.
+        This is a simple single page website that show cases the aws-cdk. The
+        architecture below is created automatically by cdk-dia.
       </p>
-      <img src="images/diagram.png" style="max-height: 90vh; max-width: 100%; object-fit: contain;">
+
+      <picture>
+        <source srcset="images/diagram.avif" type="image/avif" />
+        <source srcset="images/diagram.webp" type="image/webp" />
+        <img
+          src="images/diagram.png"
+          alt="Diagram of the canary deployment showing aws-cdk deployed infrastructure in AWS"
+        />
+      </picture>
     </main>
   </body>
 </html>

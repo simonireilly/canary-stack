@@ -12,7 +12,6 @@ import {
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { CfnAppMonitor } from "aws-cdk-lib/aws-rum";
 import { Bucket } from "aws-cdk-lib/aws-s3";
-import { AwsCustomResource } from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import path = require("path");
 

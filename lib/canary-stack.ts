@@ -29,6 +29,7 @@ export class CanaryStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    // Deploy the website
     const websiteBucket = new Bucket(this, "WebsiteBucket", {
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
@@ -39,6 +40,7 @@ export class CanaryStack extends Stack {
       destinationBucket: websiteBucket,
     });
 
+    // Setup the canary
     const canary = new Canary(this, "MyCanary", {
       schedule: Schedule.rate(Duration.minutes(5)),
       test: Test.custom({
@@ -65,6 +67,7 @@ export class CanaryStack extends Stack {
       })
     );
 
+    // Add Real User Monitoring
     const rum = new Rum(this, "SiteRum", {
       topLevelDomain: "*.s3-website-eu-west-1.amazonaws.com",
       appMonitorName: "canary-stack-rum",

@@ -70,6 +70,19 @@ digraph "Diagram" {
         label = " MyCanary",
         fontsize = 12,
       ];
+      "CanaryStackRum/CanaryAllowXrayPutTrace" [
+        label = "\nCanaryAllowXrayPutTra",
+        fontsize = 12,
+        image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+        imagescale = "true",
+        imagepos = "tc",
+        penwidth = "0",
+        shape = "node",
+        fixedsize = "true",
+        labelloc = "b",
+        width = 1.2,
+        height = 1.682,
+      ];
       "CanaryStackRum/CanaryAlarm" [
         label = " CanaryAlarm",
         fontsize = 12,
@@ -186,8 +199,8 @@ digraph "Diagram" {
           width = 1.2,
           height = 1.682,
         ];
-        "CanaryStackRum/SiteRum/OnEventHandler" [
-          label = " OnEventHandler",
+        "CanaryStackRum/SiteRum/UploadRumScriptHandler" [
+          label = "\nUploadRumScriptHandle",
           fontsize = 12,
           image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Compute/64/Arch_AWS-Lambda_64@5x.png",
           imagescale = "true",
@@ -197,7 +210,7 @@ digraph "Diagram" {
           fixedsize = "true",
           labelloc = "b",
           width = 2,
-          height = 2.266,
+          height = 2.4819999999999998,
         ];
         "CanaryStackRum/SiteRum/UploadRumScriptToWebsiteBucket" [
           label = " CloudFormation\nCustomResource",
@@ -228,6 +241,9 @@ digraph "Diagram" {
   "CanaryStackRum/MyCanary" -> "CanaryStackRum/WebsiteBucket" [
     dir = "both",
   ];
+  "CanaryStackRum/CanaryAllowXrayPutTrace" -> "CanaryStackRum/MyCanary" [
+    dir = "both",
+  ];
   "CanaryStackRum/SiteRum/UnauthenticatedRumRole" -> "CanaryStackRum/SiteRum/RumAppIdentityPool" [
     dir = "both",
   ];
@@ -237,7 +253,7 @@ digraph "Diagram" {
   "CanaryStackRum/SiteRum/RumAppRoleAttachment" -> "CanaryStackRum/SiteRum/UnauthenticatedRumRole" [
     dir = "both",
   ];
-  "CanaryStackRum/SiteRum/OnEventHandler" -> "CanaryStackRum/WebsiteBucket" [
+  "CanaryStackRum/SiteRum/UploadRumScriptHandler" -> "CanaryStackRum/WebsiteBucket" [
     dir = "both",
   ];
   "CanaryStackRum/SiteRum/RumAppMonitor" -> "CanaryStackRum/SiteRum/RumAppIdentityPool" [
