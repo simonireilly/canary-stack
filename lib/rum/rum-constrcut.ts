@@ -26,7 +26,10 @@ export interface RumProps {
 /**
  * The RUM custom resource can be used to setup Real User Monitoring using AWS
  *
- * The resource itself creates all the required
+ * The resource itself creates all the required infrastructure.
+ *
+ * A Cloudformation custom resource uploads the rum script to the s3 bucket that
+ * the website is deployed to
  *
  * @example
  * const rum = new Rum(this, "SiteRum", {
