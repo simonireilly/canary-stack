@@ -11,7 +11,7 @@
         font-family: "Gill Sans", sans-serif;
       }
       img {
-        max-height: 70vh;
+        max-height: 60vh;
         max-width: 100%;
         object-fit: contain;
       }
@@ -24,10 +24,44 @@
     <main style="display: flex; flex-direction: column; align-items: center">
       <h1>Welcome to the canary stack</h1>
 
+      <p>This is a simple single page website that show cases the aws-cdk.</p>
+
+      <h2>About</h2>
+
       <p>
-        This is a simple single page website that show cases the aws-cdk. The
-        architecture below is created automatically by cdk-dia.
+        This website uses
+        <a
+          href="https://aws.amazon.com/blogs/aws/cloudwatch-rum/"
+          target="_blank"
+          >Real-User Monitoring for Amazon CloudWatch</a
+        >
+        to track users on the site.
       </p>
+
+      <div>
+        <ul>
+          <li>
+            Source code:
+            <a
+              href="https://github.com/simonireilly/canary-stack"
+              target="_blank"
+              >https://github.com/simonireilly/canary-stack</a
+            >
+          </li>
+          <li>
+            Blog post:
+            <a
+              href="https://blog.simonireilly.com/posts/cloudwatch-rum-end-to-end-monitoring"
+              target="_blank"
+              >https://blog.simonireilly.com/posts/cloudwatch-rum-end-to-end-monitoring</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <h2>Design</h2>
+
+      <p>The architecture below is created automatically by cdk-dia.</p>
 
       <picture>
         <source srcset="images/diagram.avif" type="image/avif" />

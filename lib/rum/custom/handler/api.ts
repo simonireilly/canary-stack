@@ -82,5 +82,4 @@ const RUM_TEMPLATE = (rum: RUM.AppMonitor): string => `
     enableXRay: ${rum.AppMonitorConfiguration?.EnableXRay},
   }
 );
-
 `;

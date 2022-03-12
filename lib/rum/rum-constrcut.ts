@@ -1,4 +1,5 @@
 import { CustomResource, Stack } from "aws-cdk-lib";
+import { Alarm, Metric } from "aws-cdk-lib/aws-cloudwatch";
 import {
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
@@ -54,7 +55,10 @@ export class Rum extends Construct implements RumProps {
     this.s3Bucket = props.s3Bucket;
 
     this.identityPool = props.identityPool ?? this.createIdentityPool();
-
+    // TODO: Error budgets should be configurable
+    this.addErrorBudgetAlarm("WebVitalsCumulativeLayoutShift", 300);
+    this.addErrorBudgetAlarm("WebVitalsFirstInputDelay", 100);
+    this.addErrorBudgetAlarm("WebVitalsLargestContentfulPaint", 400);
     this.appMonitor = this.initializeRum();
   }
 
@@ -89,7 +93,7 @@ export class Rum extends Construct implements RumProps {
         RUMPutBatchMetrics: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              actions: ["rum:PutRumEvents", "xray:PutTraceSegments"],
+              actions: ["rum:PutRumEvents"],
               resources: [
                 Stack.of(this).formatArn({
                   service: "rum",
@@ -97,6 +101,10 @@ export class Rum extends Construct implements RumProps {
                   resourceName: this.appMonitorName,
                 }),
               ],
+            }),
+            new PolicyStatement({
+              actions: ["xray:PutTraceSegments"],
+              resources: ["*"],
             }),
           ],
         }),
@@ -165,7 +173,35 @@ export class Rum extends Construct implements RumProps {
         s3BucketName: this.s3Bucket.bucketName,
         appMonitorName: this.appMonitorName,
         appMonitorConfiguration: this.appMonitor,
+        // The CDK needs to always upload the rum, otherwise the new web
+        // deployment erases the file.
+        trigger: Date.now(),
       },
+    });
+  }
+
+  /**
+   * Add a millisecond error budget to one of the three available web vital
+   * metrics
+   */
+  private addErrorBudgetAlarm(
+    name:
+      | "WebVitalsLargestContentfulPaint"
+      | "WebVitalsCumulativeLayoutShift"
+      | "WebVitalsFirstInputDelay",
+    millisecondThreshold: number
+  ) {
+    new Alarm(this, `Alarm${name}`, {
+      evaluationPeriods: 2,
+      threshold: millisecondThreshold,
+      alarmName: name,
+      metric: new Metric({
+        metricName: name,
+        namespace: "AWS/RUM",
+        dimensionsMap: {
+          application_name: this.appMonitorName,
+        },
+      }),
     });
   }
 }
