@@ -31,11 +31,12 @@ export class CanaryStack extends Stack {
 
     // Deploy the website
     const websiteBucket = new Bucket(this, "WebsiteBucket", {
+      bucketName: "canary-stack-rum",
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
     });
 
-    new BucketDeployment(this, "DeployWebsite", {
+    const bucketDeployment = new BucketDeployment(this, "DeployWebsite", {
       sources: [Source.asset(path.join(__dirname, "website"))],
       destinationBucket: websiteBucket,
     });
@@ -72,9 +73,18 @@ export class CanaryStack extends Stack {
       topLevelDomain: "*.s3-website-eu-west-1.amazonaws.com",
       appMonitorName: "canary-stack-rum",
       s3Bucket: websiteBucket,
+      performanceBudgets: {
+        WebVitalsCumulativeLayoutShift: 0.1,
+        WebVitalsFirstInputDelay: 100,
+        WebVitalsLargestContentfulPaint: 1500,
+      },
     });
 
     Tags.of(canary).add(rum.appMonitor.name, "associated-rum");
+
+    // Ensure we wait for the website to deploy before uploading the rum script
+    // or it will get deleted!
+    rum.node.addDependency(bucketDeployment);
 
     const alarm = new Alarm(this, "CanaryAlarm", {
       metric: canary.metricSuccessPercent(),
@@ -91,7 +101,23 @@ export class CanaryStack extends Stack {
     const dashboard = new Dashboard(this, "MainDashboard", {
       dashboardName: "Rum-Dashboard",
       periodOverride: PeriodOverride.AUTO,
-      widgets: [[alarmWidget]],
+      widgets: [
+        [
+          new AlarmWidget({
+            alarm: rum.vitals.WebVitalsCumulativeLayoutShift.alarm,
+            title: "Cumulative layout shift",
+          }),
+          new AlarmWidget({
+            alarm: rum.vitals.WebVitalsFirstInputDelay.alarm,
+            title: "First Input Delay",
+          }),
+          new AlarmWidget({
+            alarm: rum.vitals.WebVitalsLargestContentfulPaint.alarm,
+            title: "Largest Contentful Paint",
+          }),
+        ],
+        [alarmWidget],
+      ],
     });
 
     new CfnOutput(this, "WebsiteUrl", {

@@ -22,23 +22,30 @@
   </head>
   <body>
     <main style="display: flex; flex-direction: column; align-items: center">
-      <h1>Welcome to the canary stack</h1>
-
-      <p>This is a simple single page website that show cases the aws-cdk.</p>
-
-      <h2>About</h2>
-
-      <p>
-        This website uses
-        <a
-          href="https://aws.amazon.com/blogs/aws/cloudwatch-rum/"
-          target="_blank"
-          >Real-User Monitoring for Amazon CloudWatch</a
-        >
-        to track users on the site.
-      </p>
-
       <div>
+        <h1>The canary stack</h1>
+
+        <p>
+          This is a simple single page website that show cases AWS website
+          monitoring.
+        </p>
+
+        <h2>About</h2>
+
+        <p>
+          This website uses
+          <a
+            href="https://aws.amazon.com/blogs/aws/cloudwatch-rum/"
+            target="_blank"
+            >Real-User Monitoring for Amazon CloudWatch</a
+          >
+          to track users on the site. And, it also uses
+          <a
+            href="https://catalog.us-east-1.prod.workshops.aws/workshops/31676d37-bbe9-4992-9cd1-ceae13c5116c/en-US/synthetics"
+            >AWS Cloudwatch Synthetics</a
+          >, to routinely poll the website.
+        </p>
+
         <ul>
           <li>
             Source code:
@@ -57,11 +64,14 @@
             >
           </li>
         </ul>
+
+        <h2>Design</h2>
+
+        <p>
+          The architecture below is created automatically by
+          <a href="https://github.com/pistazie/cdk-dia#readme">cdk-dia.</a>
+        </p>
       </div>
-
-      <h2>Design</h2>
-
-      <p>The architecture below is created automatically by cdk-dia.</p>
 
       <picture>
         <source srcset="images/diagram.avif" type="image/avif" />
