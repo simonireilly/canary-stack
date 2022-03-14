@@ -5,7 +5,14 @@ import {
   Schedule,
   Test,
 } from "@aws-cdk/aws-synthetics-alpha";
-import { CfnOutput, Duration, Stack, StackProps, Tags } from "aws-cdk-lib";
+import {
+  CfnOutput,
+  Duration,
+  RemovalPolicy,
+  Stack,
+  StackProps,
+  Tags,
+} from "aws-cdk-lib";
 import {
   Alarm,
   AlarmWidget,
@@ -23,7 +30,8 @@ import { Bucket } from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 import * as path from "path";
-import { Rum } from "./rum/rum-constrcut";
+import { Rum } from "./rum/rum-construct";
+import { WebVitals } from "./rum/vitals-construct";
 
 export class CanaryStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -34,16 +42,19 @@ export class CanaryStack extends Stack {
       bucketName: "canary-stack-rum",
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const bucketDeployment = new BucketDeployment(this, "DeployWebsite", {
       sources: [Source.asset(path.join(__dirname, "website"))],
       destinationBucket: websiteBucket,
+      retainOnDelete: false,
     });
 
     // Setup the canary
     const canary = new Canary(this, "MyCanary", {
-      schedule: Schedule.rate(Duration.minutes(5)),
+      schedule: Schedule.rate(Duration.minutes(45)),
       test: Test.custom({
         code: Code.fromAsset(path.join(__dirname, "canary")),
         handler: "index.handler",
@@ -73,7 +84,7 @@ export class CanaryStack extends Stack {
       topLevelDomain: "*.s3-website-eu-west-1.amazonaws.com",
       appMonitorName: "canary-stack-rum",
       s3Bucket: websiteBucket,
-      performanceBudgets: {
+      webVitalProps: {
         WebVitalsCumulativeLayoutShift: 0.1,
         WebVitalsFirstInputDelay: 100,
         WebVitalsLargestContentfulPaint: 1500,

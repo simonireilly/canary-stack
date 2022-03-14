@@ -229,8 +229,21 @@ digraph "Diagram" {
           label = " RUM APPMONITOR\nRumAppMonitor",
           fontsize = 12,
         ];
-        "CanaryStackRum/SiteRum/AlarmWebVitalsCumulativeLayoutShift" [
-          label = "\nAlarmWebVitalsCumulat",
+      }
+      subgraph "cluster-SubGraph.SiteRum-vitals" {
+        graph [
+          label = "SiteRum-vitals",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#d6d6d6",
+        ];
+        "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsCumulativeLayoutShift" [
+          label = " SiteRum vitals alarm\nWebVitalsCumulativeLa",
           fontsize = 12,
           image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
           imagescale = "true",
@@ -242,8 +255,8 @@ digraph "Diagram" {
           width = 1.2,
           height = 1.682,
         ];
-        "CanaryStackRum/SiteRum/AlarmWebVitalsFirstInputDelay" [
-          label = "\nAlarmWebVitalsFirstIn",
+        "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsFirstInputDelay" [
+          label = " SiteRum vitals alarm\nWebVitalsFirstInputDe",
           fontsize = 12,
           image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
           imagescale = "true",
@@ -255,8 +268,8 @@ digraph "Diagram" {
           width = 1.2,
           height = 1.682,
         ];
-        "CanaryStackRum/SiteRum/AlarmWebVitalsLargestContentfulPaint" [
-          label = "\nAlarmWebVitalsLargest",
+        "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsLargestContentfulPaint" [
+          label = " SiteRum vitals alarm\nWebVitalsLargestConte",
           fontsize = 12,
           image = "/home/simon/code/stacks/canary-stack/node_modules/cdk-dia/icons/aws/Service/Arch_Management-Governance/64/Arch_Amazon-CloudWatch_64@5x.png",
           imagescale = "true",
@@ -304,13 +317,13 @@ digraph "Diagram" {
   "CanaryStackRum/CanaryAlarm" -> "CanaryStackRum/MyCanary" [
     dir = "both",
   ];
-  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum/AlarmWebVitalsCumulativeLayoutShift" [
+  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsCumulativeLayoutShift" [
     dir = "both",
   ];
-  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum/AlarmWebVitalsFirstInputDelay" [
+  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsFirstInputDelay" [
     dir = "both",
   ];
-  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum/AlarmWebVitalsLargestContentfulPaint" [
+  "CanaryStackRum/MainDashboard" -> "CanaryStackRum/SiteRum-vitals/SiteRum-vitals-alarm-WebVitalsLargestContentfulPaint" [
     dir = "both",
   ];
   "CanaryStackRum/MainDashboard" -> "CanaryStackRum/CanaryAlarm" [
